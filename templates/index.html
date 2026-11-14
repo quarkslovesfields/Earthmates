@@ -1,0 +1,152 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MERRA-2 Wind Stress Analysis</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f6fa;
+            margin: 0;
+            padding: 40px;
+            color: #243247;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: auto;
+            background: white;
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        h1 {
+            color: #174b70;
+        }
+
+        .date-fields {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin: 25px 0;
+        }
+
+        .date-fields label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input {
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        button {
+            padding: 12px 24px;
+            background: #176b87;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        button:hover {
+            background: #104e66;
+        }
+
+        .error {
+            color: #b42318;
+        }
+
+        .result {
+            margin-top: 25px;
+            padding: 20px;
+            background: #edf5f8;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+     <h1>MERRA-2 Wind Stress Analysis</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label for="start_month">Starting Month:</label>
+        <input
+            type="month"
+            id="start_month"
+            name="start_month"
+            min="1997-01"
+            max="2026-09"
+            required
+        >
+
+        <label for="end_month">Ending Month:</label>
+        <input
+            type="month"
+            id="end_month"
+            name="end_month"
+            min="start"
+            max="2026-09"
+            required
+        >
+
+        <button type="submit">Load Data</button>
+    </form>
+
+    {% if success %}
+        <h2>Analysis Results</h2>
+        <p>{{ message }}</p>
+
+        <h3>Spatial Distribution of Wind Stress</h3>
+        <img
+            src="data:image/png;base64,{{ map_image }}"
+            alt="Spatial wind stress map"
+            style="max-width: 100%; height: auto;"
+        >
+
+        <h3>Monthly Mean Wind Stress</h3>
+        <img
+            src="data:image/png;base64,{{ timeseries_image }}"
+            alt="Monthly mean wind stress time series"
+            style="max-width: 100%; height: auto;"
+        >
+    {% endif %}
+
+    {% if error %}
+        <h2>Error</h2>
+        <p>{{ error }}</p>
+    {% endif %}
+
+</div>
+
+<script>
+    const startMonth = document.getElementById("start_month");
+    const endMonth = document.getElementById("end_month");
+
+    startMonth.addEventListener("change", function () {
+        const selectedStart = startMonth.value;
+
+        endMonth.min = selectedStart || "1997-01";
+
+        if (endMonth.value && endMonth.value < endMonth.min) {
+            endMonth.value = endMonth.min;
+        }
+    });
+</script>
+
+</body>
+</html>

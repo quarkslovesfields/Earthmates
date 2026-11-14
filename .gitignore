@@ -1,0 +1,36 @@
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Django
+*.log
+db.sqlite3
+media/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# MERRA-2 datasets
+data/
+*.nc4
+*.nc
+
+# Generated plots
+wind_stress_test.png
+wind_stress_timeseries_test.png
+
+# IDE
+.vscode/
+
+# Operating system
+.DS_Store
+Thumbs.db
